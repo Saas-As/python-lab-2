@@ -1,0 +1,34 @@
+# Виртуальное окружение — внутри контейнера своё, это не нужно
+.venv/
+venv/
+env/
+
+# Кэш Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Git
+.git/
+.gitignore
+
+# Отчёты и данные — генерируются внутри контейнера
+reports/
+data/
+*.docx
+*.xlsx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Документация — не нужна для запуска
+README.md
+
+# Docker-файлы — не должны попадать внутрь
+Dockerfile
+.dockerignore
