@@ -192,6 +192,13 @@ pytest -k "wallpaper" -v
 
 ---
 
+## Запуск в Docker
+
+```bash
+docker build -t python-lab-2 .
+docker run --rm -it -v "${PWD}/reports:/app/reports" python-lab-2
+docker run --rm python-lab-2 python -m pytest -v
+```
 ## Архитектура
 
 Проект разделён на три слоя:
