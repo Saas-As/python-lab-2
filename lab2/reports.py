@@ -22,8 +22,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from .calculator import CalculationResult, Summary
 
 
-# Заголовки таблицы — одни и те же для всех форматов,
-# поэтому вынесены в константу. Меняешь здесь — меняется везде.
+# Заголовки таблицы
 TABLE_HEADERS = (
     "Материал",
     "Площадь единицы, м²",
@@ -35,10 +34,6 @@ TABLE_HEADERS = (
     "Стоимость, ₽",
 )
 
-
-# =====================================================================
-#                        АБСТРАКТНЫЙ ЭКСПОРТЁР
-# =====================================================================
 
 class BaseReportWriter(ABC):
     """
@@ -55,8 +50,6 @@ class BaseReportWriter(ABC):
     def __init__(self, output_dir: str | Path = "reports"):
         self._output_dir = None
         self.output_dir = output_dir
-
-    # ---------- managed-атрибут ----------
 
     @property
     def output_dir(self) -> Path:
@@ -78,9 +71,6 @@ class BaseReportWriter(ABC):
     ) -> Path:
         """
         Сохранить отчёт и вернуть путь к файлу.
-
-        Если filename не задан — генерируется имя с датой и временем,
-        например: report_2026-10-16_14-32-05.docx
         """
         if not isinstance(summary, Summary):
             raise TypeError("Ожидался объект Summary")
@@ -97,14 +87,10 @@ class BaseReportWriter(ABC):
         self._write_report(summary, filepath)
         return filepath
 
-    # ---------- абстрактный контракт ----------
-
     @abstractmethod
     def _write_report(self, summary: Summary, filepath: Path) -> None:
         """Реализуется в наследнике: записать файл конкретного формата."""
         ...
-
-    # ---------- dunder ----------
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}(output_dir={self.output_dir!r})"
@@ -225,10 +211,7 @@ class XlsxReportWriter(BaseReportWriter):
         )
         total_cell.font = self.TOTAL_FONT
         total_cell.number_format = '#,##0.00 "₽"'
-
-        # --- автоподбор ширины столбцов ---
-        # openpyxl не умеет автоматически, поэтому считаем вручную:
-        # ширина = max длина значения в столбце + 2 символа запаса.
+        
         for col_idx in range(1, len(TABLE_HEADERS) + 1):
             column_letter = ws.cell(row=1, column=col_idx).column_letter
             max_len = 0
@@ -245,7 +228,7 @@ class XlsxReportWriter(BaseReportWriter):
 
 
 # =====================================================================
-#                     УДОБНАЯ ФУНКЦИЯ-ОБЁРТКА
+#                     ФУНКЦИЯ-ОБЁРТКА
 # =====================================================================
 
 def save_all(
